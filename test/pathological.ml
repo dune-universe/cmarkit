@@ -104,7 +104,7 @@ let tests =
 (* Run commands on a deadline. Something like this should be added to B0_kit. *)
 
 type deadline_exit = [ Os.Cmd.status | `Timeout ]
-type deadline_run = Mtime.span * deadline_exit
+type deadline_run = Mtime.Span.t * deadline_exit
 
 let deadline_run ~timeout ?env ?cwd ?stdin ?stdout ?stderr cmd =
   let rec wait ~deadline dur pid =
@@ -125,8 +125,8 @@ let deadline_run ~timeout ?env ?cwd ?stdin ?stdout ?stderr cmd =
 
 type test_exit = [ deadline_exit | `Unexpected of string * string ]
 
-let pp_ok = Fmt.tty_string [`Fg `Green]
-let pp_err = Fmt.tty_string [`Fg `Red]
+let pp_ok = Fmt.tty' [`Fg `Green]
+let pp_err = Fmt.tty' [`Fg `Red]
 let pp_test_exit ppf = function
 | `Exited 0 -> Fmt.pf ppf "%a" pp_ok "ok"
 | `Exited n -> Fmt.pf ppf "%a with %d" pp_err "exited" n

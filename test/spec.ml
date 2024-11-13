@@ -5,7 +5,7 @@
 
 open B0_std
 open Result.Syntax
-open B00_serialk_json
+open B0_json
 
 let version = "0.30"
 type test =
@@ -42,7 +42,7 @@ let diff ~spec cmarkit =
   | `Ansi -> "--color=always"
   in
   let* diff =
-    Os.Cmd.get Cmd.(atom "git" % "diff" % "--ws-error-highlight=all" %
+    Os.Cmd.get Cmd.(arg "git" % "diff" % "--ws-error-highlight=all" %
                     "--no-index" % "--patience" % color)
   in
   Result.join @@ Os.Dir.with_tmp @@ fun dir ->
@@ -54,8 +54,8 @@ let diff ~spec cmarkit =
   Result.map snd @@
   Os.Cmd.run_status_out ~env ~trim ~cwd:dir Cmd.(diff % "spec" % "cmarkit")
 
-let ok = Fmt.tty_string [`Fg `Green]
-let fail = Fmt.tty_string [`Fg `Red]
+let ok = Fmt.tty' [`Fg `Green]
+let fail = Fmt.tty' [`Fg `Red]
 
 let cli ~exe () =
   let usage = Fmt.str "Usage %s [--file FILE.json] NUM[-NUM]…" exe in
